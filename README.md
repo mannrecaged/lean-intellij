@@ -61,7 +61,7 @@ Everything else — 92 plugins — is disabled.
 
 ---
 
-## What gets disabled (86 plugins)
+## What gets disabled (92 plugins)
 
 | Category | Plugin IDs |
 |----------|-----------|
@@ -90,20 +90,51 @@ Everything else — 92 plugins — is disabled.
 
 ---
 
-## Restore original settings
+## Reverting
 
-The script backs up your existing files before changing anything. To restore:
+Before making any changes, the script saves a timestamped backup inside your IDEA config directory. The exact path is printed at the end of the run:
 
-```bash
-# macOS / Linux — path printed at end of apply.sh
-cp -r "$HOME/Library/Application Support/JetBrains/IntelliJIdea2026.1/.lean-backup-YYYYMMDD-HHMMSS/"* \
-      "$HOME/Library/Application Support/JetBrains/IntelliJIdea2026.1/"
+```
+✓ Backup saved → /Users/you/Library/Application Support/JetBrains/IntelliJIdea2026.1/.lean-backup-20260425-123456
 ```
 
-Or just delete the three files it created:
-- `idea.vmoptions` (IDEA will use built-in defaults)
-- `disabled_plugins.txt` (all plugins re-enabled)
-- `options/ide.general.xml` (registry reverts to defaults)
+### Restore from backup (recommended)
+
+```bash
+# macOS
+cp -r "$HOME/Library/Application Support/JetBrains/IntelliJIdea2026.1/.lean-backup-YYYYMMDD-HHMMSS/"* \
+      "$HOME/Library/Application Support/JetBrains/IntelliJIdea2026.1/"
+
+# Linux
+cp -r "$HOME/.config/JetBrains/IntelliJIdea2026.1/.lean-backup-YYYYMMDD-HHMMSS/"* \
+      "$HOME/.config/JetBrains/IntelliJIdea2026.1/"
+```
+
+Replace `YYYYMMDD-HHMMSS` with the timestamp from the script output. Then restart IDEA.
+
+### Remove the files manually
+
+If the backup is gone or you just want a clean slate, delete the three files the script created. IDEA will fall back to its built-in defaults for each one on next launch.
+
+**macOS / Linux:**
+```bash
+IDEA_CONFIG="$HOME/Library/Application Support/JetBrains/IntelliJIdea2026.1"   # macOS
+# IDEA_CONFIG="$HOME/.config/JetBrains/IntelliJIdea2026.1"                     # Linux
+
+rm "$IDEA_CONFIG/idea.vmoptions"
+rm "$IDEA_CONFIG/disabled_plugins.txt"
+rm "$IDEA_CONFIG/options/ide.general.xml"
+```
+
+**Windows (PowerShell):**
+```powershell
+$cfg = "$env:APPDATA\JetBrains\IntelliJIdea2026.1"
+Remove-Item "$cfg\idea.vmoptions"
+Remove-Item "$cfg\disabled_plugins.txt"
+Remove-Item "$cfg\options\ide.general.xml"
+```
+
+Restart IDEA after either approach.
 
 ---
 
@@ -124,7 +155,7 @@ This caps the Gradle daemon at 1 GB and the Kotlin daemon at 768 MB — enough f
 | Process | Before | After |
 |---------|--------|-------|
 | IntelliJ IDE heap | up to 2 GB | capped at 1 GB |
-| Code cache (off-heap) | 512 MB | 128 MB |
+| Code cache (off-heap) | 512 MB | 240 MB |
 | Gradle build daemon | uncapped | capped at 1 GB |
 | Kotlin compilation daemon | uncapped | capped at 768 MB |
 
@@ -177,18 +208,6 @@ The biggest trigger for cache corruption is external tools (AI CLI agents, build
 Both are set to `true` by SpellStartupActivity (if you use the companion plugin). For the standalone script they can be set via **Settings → Appearance & Behavior → System Settings**.
 
 Also make sure your Gradle project's `build/` directories are marked **Excluded** in Project Structure (⌘;) — this prevents IDEA from indexing thousands of `.class` files that change on every build.
-
-### Troubleshooting: `./gradlew runIde` fails in 1 second
-
-If you see: `The contents of the immutable workspace '…/transforms/…' have been modified`
-
-An external tool (AI CLI, `find`, another Gradle process) modified Gradle's immutable transform cache. Fix:
-
-```bash
-rm -rf ~/.gradle/caches/9.3.0/transforms/<hash-from-error>
-```
-
-Then re-run. Gradle re-extracts the affected JARs on the next build.
 
 ---
 
