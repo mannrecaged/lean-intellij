@@ -19,7 +19,7 @@ Works by writing three files into your existing IDEA config directory:
 | File | What it does |
 |------|-------------|
 | `idea.vmoptions` | Cuts default JVM heap from 2 GB → 1 GB; tunes GC and code cache |
-| `disabled_plugins.txt` | Stops 90 built-in plugins from loading (Spring, Docker, Angular, Maven, localization packs, etc.) |
+| `disabled_plugins.txt` | Stops 91 built-in plugins from loading (Spring, Docker, Angular, Maven, localization packs, etc.) |
 | `options/ide.general.xml` | Tunes registry: zero-latency editor rendering, telemetry off, 10 MB IntelliSense cap |
 
 Nothing is uninstalled. Plugins stay on disk; they just don't load. One command undoes everything.
@@ -43,6 +43,8 @@ chmod +x apply.sh revert.sh
 ```powershell
 .\apply.ps1
 ```
+
+> **Note:** IntelliJ IDEA must have been launched at least once before running the script. The script writes into IDEA's config directory, which IDEA only creates on first launch. If you get a "no config directory found" error, open IDEA, let it finish initialising, close it, then re-run the script.
 
 Restart IntelliJ IDEA. That's it.
 
@@ -73,17 +75,16 @@ To undo all changes:
 | `JUnit` | Run individual test methods from the IDE gutter |
 | `org.intellij.groovy` | Parse `.gradle` (Groovy DSL) build files |
 | `org.toml.lang` | Gradle version catalogs (`libs.versions.toml`) |
-| `com.intellij.mcpServer` | MCP server for Claude Code / AI agent tools |
 | `intellij.platform.ijent.impl` | WSL and SSH remote development |
 | `org.intellij.plugins.markdown` | Markdown preview and syntax highlighting |
 
 > **You can always re-enable any disabled plugin at any time via Settings → Plugins.**
 
-Everything else — 90 plugins — is disabled.
+Everything else — 91 plugins — is disabled.
 
 ---
 
-## What gets disabled (90 plugins)
+## What gets disabled (91 plugins)
 
 | Category | Plugin IDs |
 |----------|-----------|
@@ -105,7 +106,7 @@ Everything else — 90 plugins — is disabled.
 | Diagrams / visualization | `com.intellij.diagram`, `com.intellij.debugger.collections.visualizer` |
 | Bytecode / streams | `ByteCodeViewer`, `XPathView`, `org.jetbrains.debugger.streams` |
 | Testing extras | `Coverage`, `TestNG-J` |
-| Platform / misc | `com.intellij.code.provenance`, `com.intellij.copyright`, `com.intellij.dev`, `com.intellij.platform.daemon`, `com.intellij.platform.images`, `com.intellij.modules.json`, `com.intellij.compose`, `com.jetbrains.performancePlugin`, `com.jetbrains.performancePlugin.async`, `com.jetbrains.sh`, `Lombook Plugin` |
+| Platform / misc | `com.intellij.code.provenance`, `com.intellij.copyright`, `com.intellij.dev`, `com.intellij.mcpServer`, `com.intellij.platform.daemon`, `com.intellij.platform.images`, `com.intellij.modules.json`, `com.intellij.compose`, `com.jetbrains.performancePlugin`, `com.jetbrains.performancePlugin.async`, `com.jetbrains.sh`, `Lombook Plugin` |
 | Other | `training`, `com.intellij.tasks`, `com.intellij.stylelint`, `tanvd.grazi`, `org.intellij.groovy.live.templates`, `org.intellij.qodana`, `org.jetbrains.idea.eclipse`, `org.jetbrains.plugins.github`, `org.jetbrains.plugins.gitlab`, `org.jetbrains.plugins.javaFX`, `org.jetbrains.plugins.textmate`, `org.jetbrains.plugins.vue`, `org.jetbrains.plugins.yaml`, `org.jetbrains.security.package-checker` |
 
 > **Spring Boot developers:** Re-enable via **Settings → Plugins**. Minimum set: `com.intellij.spring`, `com.intellij.spring.boot`, `org.jetbrains.plugins.yaml`.

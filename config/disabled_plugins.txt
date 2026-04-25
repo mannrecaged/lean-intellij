@@ -33,6 +33,7 @@ com.intellij.jsonpath
 com.intellij.ko
 com.intellij.LineProfiler
 com.intellij.liquibase
+com.intellij.mcpServer
 com.intellij.microservices.jvm
 com.intellij.microservices.ui
 com.intellij.modules.json
