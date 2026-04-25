@@ -1,0 +1,9 @@
+<application>
+  <component name="Registry">
+    <entry key="editor.zero.latency.rendering" value="true" source="USER" />
+    <entry key="ide.slow.operations.assertion" value="false" source="USER" />
+    <entry key="statistics.send.usages" value="false" source="USER" />
+    <entry key="idea.max.intellisense.filesize" value="10000" source="USER" />
+    <entry key="vcs.root.auto.add" value="false" source="USER" />
+  </component>
+</application>

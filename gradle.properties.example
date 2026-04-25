@@ -1,0 +1,13 @@
+# Add these to your project's gradle.properties to cap the Gradle and Kotlin
+# daemon memory footprint. Without explicit caps, each daemon inherits the
+# maximum heap, easily adding 1–2 GB to the total RSS of your dev machine.
+
+# Gradle build daemon
+org.gradle.jvmargs=-Xmx1g -XX:MaxMetaspaceSize=256m -XX:+UseStringDeduplication
+
+# Kotlin compilation daemon (spawned separately during every Kotlin build)
+kotlin.daemon.jvm.options=-Xmx768m -XX:MaxMetaspaceSize=256m
+
+# Keep daemons alive for 1 hour so they don't cold-start on every build
+org.gradle.daemon=true
+org.gradle.daemon.idletimeout=3600000
