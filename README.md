@@ -132,7 +132,7 @@ A medium Kotlin/Gradle project typically uses ~800 MB for the IDE process after 
 ```
 -Xms64m
 -Xmx1024m
--XX:ReservedCodeCacheSize=128m
+-XX:ReservedCodeCacheSize=240m
 -XX:SoftRefLRUPolicyMSPerMB=25
 -XX:+UseStringDeduplication
 -XX:G1ReservePercent=5
