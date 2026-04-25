@@ -1,6 +1,6 @@
 # lean-intellij
 
-A one-command setup that makes IntelliJ IDEA Ultimate leaner and faster for **Kotlin / Java / Gradle** development — without switching to a different IDE.
+A one-command setup that makes IntelliJ IDEA leaner and faster for **Kotlin / Java / Gradle** development — without switching to a different IDE.
 
 ## Why
 
