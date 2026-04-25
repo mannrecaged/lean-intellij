@@ -56,7 +56,7 @@ Restart IntelliJ IDEA. That's it.
 | `org.toml.lang` | Gradle version catalogs (`libs.versions.toml`) |
 | `com.intellij.mcpServer` | MCP server for Claude Code / AI agent tools |
 | `intellij.platform.ijent.impl` | WSL and SSH remote development |
-| `org.jetbrains.plugins.textmate` | Grammar-based syntax highlighting for `.md`, shell scripts, and other file types not covered by dedicated plugins |
+| `org.intellij.plugins.markdown` | Markdown preview and syntax highlighting |
 
 > **You can always re-enable any disabled plugin at any time via Settings → Plugins.**
 
@@ -87,7 +87,7 @@ Everything else — 90 plugins — is disabled.
 | Bytecode / streams | `ByteCodeViewer`, `XPathView`, `org.jetbrains.debugger.streams` |
 | Testing extras | `Coverage`, `TestNG-J` |
 | Platform / misc | `com.intellij.code.provenance`, `com.intellij.copyright`, `com.intellij.dev`, `com.intellij.platform.daemon`, `com.intellij.platform.images`, `com.intellij.modules.json`, `com.intellij.compose`, `com.jetbrains.performancePlugin`, `com.jetbrains.performancePlugin.async`, `com.jetbrains.sh`, `Lombook Plugin` |
-| Other | `training`, `com.intellij.tasks`, `com.intellij.stylelint`, `tanvd.grazi`, `org.intellij.groovy.live.templates`, `org.intellij.plugins.markdown`, `org.intellij.qodana`, `org.jetbrains.idea.eclipse`, `org.jetbrains.plugins.github`, `org.jetbrains.plugins.gitlab`, `org.jetbrains.plugins.javaFX`, `org.jetbrains.plugins.vue`, `org.jetbrains.plugins.yaml`, `org.jetbrains.security.package-checker` |
+| Other | `training`, `com.intellij.tasks`, `com.intellij.stylelint`, `tanvd.grazi`, `org.intellij.groovy.live.templates`, `org.intellij.qodana`, `org.jetbrains.idea.eclipse`, `org.jetbrains.plugins.github`, `org.jetbrains.plugins.gitlab`, `org.jetbrains.plugins.javaFX`, `org.jetbrains.plugins.textmate`, `org.jetbrains.plugins.vue`, `org.jetbrains.plugins.yaml`, `org.jetbrains.security.package-checker` |
 
 > **Spring Boot developers:** Re-enable via **Settings → Plugins**. Minimum set: `com.intellij.spring`, `com.intellij.spring.boot`, `org.jetbrains.plugins.yaml`.
 

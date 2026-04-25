@@ -72,7 +72,6 @@ intellij.webpack
 intellij.webp
 org.editorconfig.editorconfigjetbrains
 org.intellij.groovy.live.templates
-org.intellij.plugins.markdown
 org.intellij.qodana
 org.jetbrains.completion.full.line
 org.jetbrains.debugger.streams
@@ -82,6 +81,7 @@ org.jetbrains.plugins.github
 org.jetbrains.plugins.gitlab
 org.jetbrains.plugins.javaFX
 org.jetbrains.plugins.kotlin.jupyter
+org.jetbrains.plugins.textmate
 org.jetbrains.plugins.vue
 org.jetbrains.plugins.yaml
 org.jetbrains.security.package-checker
