@@ -2,6 +2,18 @@
 
 A one-command setup that makes IntelliJ IDEA Ultimate leaner and faster for **Kotlin / Java / Gradle** development — without switching to a different IDE.
 
+## Why
+
+AI coding agents have changed what an IDE actually needs to do.
+
+Features like Spring bean graphs, database UML diagrams, Maven support, code coverage overlays, and cloud settings sync made sense when the IDE was your primary interface for understanding and navigating a codebase. Today, tools like Claude Code and GitHub Copilot handle that layer — they read the code, reason about structure, suggest refactors, and write the boilerplate.
+
+What the IDE still needs to do well: **syntax highlighting, go-to-definition, debugger, Gradle import, Git, and a terminal**. Everything else is overhead.
+
+This project strips IntelliJ back to that core. The result is an IDE that starts faster, uses ~800 MB instead of 1.5–2 GB, and spends its CPU on the files you're actually editing — not on indexing Spring beans you're not looking at or running ML ranking on completions your AI agent is already handling.
+
+---
+
 Works by writing three files into your existing IDEA config directory:
 
 | File | What it does |
