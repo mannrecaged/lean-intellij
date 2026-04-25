@@ -9,11 +9,13 @@ Lombook Plugin
 TestNG-J
 XPathView
 com.android.tools.gradle.dcl
+com.intellij.aop
 com.intellij.code.provenance
 com.intellij.completion.ml.ranking
 com.intellij.compose
 com.intellij.configurationScript
 com.intellij.copyright
+com.intellij.cron
 com.intellij.css
 com.intellij.database
 com.intellij.debugger.collections.visualizer
@@ -21,6 +23,7 @@ com.intellij.dev
 com.intellij.diagram
 com.intellij.findusages.ml
 com.intellij.flyway
+com.intellij.freemarker
 com.intellij.ja
 com.intellij.java-i18n
 com.intellij.javaee
@@ -28,6 +31,7 @@ com.intellij.javaee.el
 com.intellij.jpa.jpb.model
 com.intellij.jsonpath
 com.intellij.ko
+com.intellij.LineProfiler
 com.intellij.liquibase
 com.intellij.microservices.jvm
 com.intellij.microservices.ui
@@ -49,6 +53,7 @@ com.intellij.stylelint
 com.intellij.swagger
 com.intellij.tasks
 com.intellij.thymeleaf
+com.intellij.velocity
 com.intellij.zh
 com.jetbrains.performancePlugin
 com.jetbrains.performancePlugin.async
@@ -73,6 +78,7 @@ org.jetbrains.completion.full.line
 org.jetbrains.debugger.streams
 org.jetbrains.idea.eclipse
 org.jetbrains.idea.maven
+org.jetbrains.idea.reposearch
 org.jetbrains.plugins.github
 org.jetbrains.plugins.gitlab
 org.jetbrains.plugins.javaFX

@@ -112,7 +112,7 @@ echo "✓ Backup saved → $BACKUP"
 
 # ─── JVM memory flags ────────────────────────────────────────────────────────
 cp "$SCRIPT_DIR/config/idea.vmoptions" "$IDEA_CONFIG/idea.vmoptions"
-echo "✓ JVM flags: Xmx=1024m · CodeCache=128m · cycle.buffer=disabled"
+echo "✓ JVM flags: Xmx=1024m · CodeCache=240m · GC-tuned · cycle.buffer=disabled"
 
 # ─── Disable unused plugins ──────────────────────────────────────────────────
 cp "$SCRIPT_DIR/config/disabled_plugins.txt" "$IDEA_CONFIG/disabled_plugins.txt"

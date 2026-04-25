@@ -19,7 +19,7 @@ Works by writing three files into your existing IDEA config directory:
 | File | What it does |
 |------|-------------|
 | `idea.vmoptions` | Cuts default JVM heap from 2 GB → 1 GB; tunes GC and code cache |
-| `disabled_plugins.txt` | Stops 86 built-in plugins from loading (Spring, Docker, Angular, Maven, localization packs, etc.) |
+| `disabled_plugins.txt` | Stops 92 built-in plugins from loading (Spring, Docker, Angular, Maven, localization packs, etc.) |
 | `options/ide.general.xml` | Tunes registry: zero-latency editor rendering, telemetry off, 10 MB IntelliSense cap |
 
 Nothing is uninstalled. Plugins stay on disk; they just don't load. One command undoes everything.
@@ -57,7 +57,7 @@ Restart IntelliJ IDEA. That's it.
 | `com.intellij.mcpServer` | MCP server for Claude Code / AI agent tools |
 | `intellij.platform.ijent.impl` | WSL and SSH remote development |
 
-Everything else — 86 plugins — is disabled.
+Everything else — 92 plugins — is disabled.
 
 ---
 
@@ -77,6 +77,9 @@ Everything else — 86 plugins — is disabled.
 | Containers | `Docker` |
 | Data science | `intellij.jupyter`, `org.jetbrains.plugins.kotlin.jupyter`, `intellij.grid.plugin`, `com.intellij.notebooks.core` |
 | Config / frameworks | `com.intellij.configurationScript`, `idea.plugin.protoeditor`, `intellij.ktor`, `com.intellij.jsonpath`, `org.editorconfig.editorconfigjetbrains` |
+| Templates | `com.intellij.velocity`, `com.intellij.freemarker` |
+| AOP / scheduling | `com.intellij.aop`, `com.intellij.cron` |
+| Profiling / search | `com.intellij.LineProfiler`, `org.jetbrains.idea.reposearch` |
 | Diagrams / visualization | `com.intellij.diagram`, `com.intellij.debugger.collections.visualizer` |
 | Bytecode / streams | `ByteCodeViewer`, `XPathView`, `org.jetbrains.debugger.streams` |
 | Testing extras | `Coverage`, `TestNG-J` |
@@ -186,6 +189,25 @@ rm -rf ~/.gradle/caches/9.3.0/transforms/<hash-from-error>
 ```
 
 Then re-run. Gradle re-extracts the affected JARs on the next build.
+
+---
+
+## Recommended manual settings
+
+These are per-user preferences that the script cannot write. Set them once after running `apply.sh`.
+
+### Turn off auto-import (Settings → Editor → General → Auto Import)
+
+With AI agents writing code, IDEA's background import management creates conflicts — it silently adds or removes imports while the agent is mid-edit, causing undo confusion and dirty diffs.
+
+- **Java**: uncheck "Add unambiguous imports on the fly" and "Optimize imports on the fly"
+- **Kotlin**: same two options under the Kotlin tab
+
+### Turn off Git auto-fetch (Settings → Version Control → Git)
+
+IDEA polls the remote every few minutes by default. If you're running `git fetch` / `git pull` explicitly through Claude Code or your terminal, this is redundant background network traffic and VFS churn.
+
+- Uncheck **"Auto fetch"**
 
 ---
 
