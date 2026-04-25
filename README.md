@@ -31,13 +31,32 @@ Nothing is uninstalled. Plugins stay on disk; they just don't load. One command 
 ```bash
 git clone https://github.com/your-username/lean-intellij
 cd lean-intellij
-chmod +x apply.sh
-./apply.sh          # macOS / Linux
-# — or —
-.\apply.ps1         # Windows (PowerShell)
+```
+
+**macOS / Linux**
+```bash
+chmod +x apply.sh revert.sh
+./apply.sh
+```
+
+**Windows (PowerShell)**
+```powershell
+.\apply.ps1
 ```
 
 Restart IntelliJ IDEA. That's it.
+
+To undo all changes:
+
+**macOS / Linux**
+```bash
+./revert.sh
+```
+
+**Windows (PowerShell)**
+```powershell
+.\revert.ps1
+```
 
 ---
 
@@ -95,49 +114,27 @@ Everything else — 90 plugins — is disabled.
 
 ## Reverting
 
-Before making any changes, the script saves a timestamped backup inside your IDEA config directory. The exact path is printed at the end of the run:
+Before making any changes, `apply.sh` / `apply.ps1` saves a timestamped backup inside your IDEA config directory. The exact path is printed at the end of the run:
 
 ```
 ✓ Backup saved → /Users/you/Library/Application Support/JetBrains/IntelliJIdea2026.1/.lean-backup-20260425-123456
 ```
 
-### Restore from backup (recommended)
+Run the revert script to restore everything automatically:
 
+**macOS / Linux**
 ```bash
-# macOS
-cp -r "$HOME/Library/Application Support/JetBrains/IntelliJIdea2026.1/.lean-backup-YYYYMMDD-HHMMSS/"* \
-      "$HOME/Library/Application Support/JetBrains/IntelliJIdea2026.1/"
-
-# Linux
-cp -r "$HOME/.config/JetBrains/IntelliJIdea2026.1/.lean-backup-YYYYMMDD-HHMMSS/"* \
-      "$HOME/.config/JetBrains/IntelliJIdea2026.1/"
+./revert.sh
 ```
 
-Replace `YYYYMMDD-HHMMSS` with the timestamp from the script output. Then restart IDEA.
-
-### Remove the files manually
-
-If the backup is gone or you just want a clean slate, delete the three files the script created. IDEA will fall back to its built-in defaults for each one on next launch.
-
-**macOS / Linux:**
-```bash
-IDEA_CONFIG="$HOME/Library/Application Support/JetBrains/IntelliJIdea2026.1"   # macOS
-# IDEA_CONFIG="$HOME/.config/JetBrains/IntelliJIdea2026.1"                     # Linux
-
-rm "$IDEA_CONFIG/idea.vmoptions"
-rm "$IDEA_CONFIG/disabled_plugins.txt"
-rm "$IDEA_CONFIG/options/ide.general.xml"
-```
-
-**Windows (PowerShell):**
+**Windows (PowerShell)**
 ```powershell
-$cfg = "$env:APPDATA\JetBrains\IntelliJIdea2026.1"
-Remove-Item "$cfg\idea.vmoptions"
-Remove-Item "$cfg\disabled_plugins.txt"
-Remove-Item "$cfg\options\ide.general.xml"
+.\revert.ps1
 ```
 
-Restart IDEA after either approach.
+The script finds the most recent backup and restores the three files (`idea.vmoptions`, `disabled_plugins.txt`, `options/ide.general.xml`). If no backup exists it simply removes those files, and IDEA falls back to its built-in defaults.
+
+Restart IntelliJ IDEA after reverting.
 
 ---
 
@@ -145,8 +142,14 @@ Restart IDEA after either approach.
 
 The IDE process is only part of the RAM picture. Gradle spawns two additional JVMs: the build daemon and the Kotlin compilation daemon. Copy `gradle.properties.example` into your project:
 
+**macOS / Linux**
 ```bash
 cp gradle.properties.example your-project/gradle.properties
+```
+
+**Windows (PowerShell)**
+```powershell
+Copy-Item gradle.properties.example your-project\gradle.properties
 ```
 
 This caps the Gradle daemon at 1 GB and the Kotlin daemon at 768 MB — enough for most medium Kotlin/JVM projects without OOM errors.
@@ -183,7 +186,7 @@ A medium Kotlin/Gradle project typically uses ~800 MB for the IDE process after 
 
 ## Customising the plugin list
 
-`config/disabled_plugins.txt` is intentionally opinionated for Kotlin/Java/Gradle-only development. If you need a plugin that's in the list (e.g. `com.intellij.database` for SQL tools), just remove that line before running `apply.sh`.
+`config/disabled_plugins.txt` is intentionally opinionated for Kotlin/Java/Gradle-only development. If you need a plugin that's in the list (e.g. `com.intellij.database` for SQL tools), just remove that line before running `apply.sh` (macOS/Linux) or `apply.ps1` (Windows).
 
 To find a plugin's ID: **Settings → Plugins → right-click a plugin → Copy Plugin ID**.
 
@@ -196,6 +199,12 @@ To find a plugin's ID: **Settings → Plugins → right-click a plugin → Copy 
 | 2026.1 | ✅ |
 | 2025.3 | ✅ (expected) |
 | 2025.2 and older | Likely works; plugin IDs may differ |
+
+| Platform | Script |
+|----------|--------|
+| macOS | `apply.sh` / `revert.sh` |
+| Linux | `apply.sh` / `revert.sh` |
+| Windows | `apply.ps1` / `revert.ps1` (run in PowerShell) |
 
 Community Edition (IDEA CE) is not supported — it ships a different plugin set and some IDs will not match.
 
@@ -210,13 +219,13 @@ The biggest trigger for cache corruption is external tools (AI CLI agents, build
 
 Both are set to `true` by SpellStartupActivity (if you use the companion plugin). For the standalone script they can be set via **Settings → Appearance & Behavior → System Settings**.
 
-Also make sure your Gradle project's `build/` directories are marked **Excluded** in Project Structure (⌘;) — this prevents IDEA from indexing thousands of `.class` files that change on every build.
+Also make sure your Gradle project's `build/` directories are marked **Excluded** in Project Structure (⌘; on macOS, Ctrl+Alt+Shift+S on Windows/Linux) — this prevents IDEA from indexing thousands of `.class` files that change on every build.
 
 ---
 
 ## Recommended manual settings
 
-These are per-user preferences that the script cannot write. Set them once after running `apply.sh`.
+These are per-user preferences that the script cannot write. Set them once after running `apply.sh` (macOS/Linux) or `apply.ps1` (Windows).
 
 ### Turn off auto-import (Settings → Editor → General → Auto Import)
 
