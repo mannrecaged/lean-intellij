@@ -20,16 +20,35 @@ merge_registry() {
     fi
 
     local added=0
+    local pat='key="([^"]+)"'
+
+    # If the target has no Registry component yet, extract it from patch and
+    # insert the whole block before </application>.
+    if ! grep -q 'name="Registry"' "$target"; then
+        local tmpblk
+        tmpblk=$(mktemp)
+        awk '/<component[^>]*name="Registry"/{p=1} p{print} p && /<\/component>/{p=0}' \
+            "$patch" > "$tmpblk"
+        # FNR==NR trick: read tmpblk into `reg`, then emit it before </application>
+        awk 'FNR==NR{reg=reg $0 "\n";next} /<\/application>/{printf "%s",reg} {print}' \
+            "$tmpblk" "$target" > "${target}.tmp" \
+            && mv "${target}.tmp" "$target"
+        rm -f "$tmpblk"
+    fi
+
+    # Add each missing entry key into the Registry component only.
     while IFS= read -r entry_line; do
-        if [[ "$entry_line" =~ key=\"([^\"]+)\" ]]; then
+        if [[ "$entry_line" =~ $pat ]]; then
             local key="${BASH_REMATCH[1]}"
             if grep -qF "key=\"$key\"" "$target"; then
                 continue  # already present — leave it untouched
             fi
-            # Insert the entry before </component> using awk
-            awk -v entry="    $entry_line" \
-                '/<\/component>/ { print entry } { print }' \
-                "$target" > "${target}.tmp" && mv "${target}.tmp" "$target"
+            # Use awk state tracking so we only insert inside the Registry component.
+            awk -v entry="    $entry_line" '
+                /<component[^>]*name="Registry"/ { in_reg=1 }
+                in_reg && /<\/component>/        { print entry; in_reg=0 }
+                { print }
+            ' "$target" > "${target}.tmp" && mv "${target}.tmp" "$target"
             added=$((added + 1))
         fi
     done < <(grep -oE '<entry [^/]+/>' "$patch")
@@ -49,7 +68,10 @@ else
 fi
 
 # ─── Pick IDEA config directory ──────────────────────────────────────────────
-mapfile -t IDEA_DIRS < <(find "$JB_BASE" -maxdepth 1 -name "IntelliJIdea*" -type d 2>/dev/null | sort -V)
+IDEA_DIRS=()
+while IFS= read -r dir; do
+    IDEA_DIRS+=("$dir")
+done < <(find "$JB_BASE" -maxdepth 1 -name "IntelliJIdea*" -type d 2>/dev/null | sort -V)
 
 if [[ ${#IDEA_DIRS[@]} -eq 0 ]]; then
     echo "❌  No IntelliJ IDEA config directory found under:"
@@ -68,7 +90,7 @@ else
     echo ""
     read -rp "Apply to which? (press Enter for latest) " choice
     if [[ -z "$choice" ]]; then
-        IDEA_CONFIG="${IDEA_DIRS[-1]}"
+        IDEA_CONFIG="${IDEA_DIRS[${#IDEA_DIRS[@]}-1]}"
     else
         IDEA_CONFIG="${IDEA_DIRS[$((choice-1))]}"
     fi
