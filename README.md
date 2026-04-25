@@ -6,7 +6,7 @@ Works by writing three files into your existing IDEA config directory:
 
 | File | What it does |
 |------|-------------|
-| `idea.vmoptions` | Cuts default JVM heap from 2 GB → 1 GB; shrinks code cache from 512 MB → 128 MB |
+| `idea.vmoptions` | Cuts default JVM heap from 2 GB → 1 GB; tunes GC and code cache |
 | `disabled_plugins.txt` | Stops 86 built-in plugins from loading (Spring, Docker, Angular, Maven, localization packs, etc.) |
 | `options/ide.general.xml` | Tunes registry: zero-latency editor rendering, telemetry off, 10 MB IntelliSense cap |
 
@@ -42,41 +42,36 @@ Restart IntelliJ IDEA. That's it.
 | `JUnit` | Run individual test methods from the IDE gutter |
 | `org.intellij.groovy` | Parse `.gradle` (Groovy DSL) build files |
 | `org.toml.lang` | Gradle version catalogs (`libs.versions.toml`) |
-| `com.intellij.mcpServer` | MCP server for AI agent tools |
+| `com.intellij.mcpServer` | MCP server for Claude Code / AI agent tools |
 | `intellij.platform.ijent.impl` | WSL and SSH remote development |
 
-Everything else — Spring, Docker, Angular, Maven, Vue, Jupyter, Markdown, EclipseKeymap, etc. — is disabled.
+Everything else — 86 plugins — is disabled.
 
 ---
 
 ## What gets disabled (86 plugins)
 
-<details>
-<summary>Click to expand full list</summary>
+| Category | Plugin IDs |
+|----------|-----------|
+| Web front-end | `AngularJS`, `JavaScript`, `HtmlTools`, `com.intellij.css`, `com.intellij.react`, `intellij.prettierJS`, `tslint`, `intellij.vitejs`, `intellij.webpack`, `intellij.webp`, `com.intellij.plugins.webcomponents`, `JSIntentionPowerPack` |
+| Spring / Jakarta EE | `com.intellij.spring`, `com.intellij.spring.boot`, `com.intellij.spring.boot.initializr`, `com.intellij.thymeleaf`, `com.intellij.javaee`, `com.intellij.javaee.el`, `com.intellij.jpa.jpb.model` |
+| Database / persistence | `com.intellij.database`, `com.intellij.flyway`, `com.intellij.liquibase` |
+| Microservices | `com.intellij.microservices.jvm`, `com.intellij.microservices.ui`, `com.intellij.swagger`, `com.jetbrains.restClient` |
+| Build tools | `org.jetbrains.idea.maven`, `com.android.tools.gradle.dcl` |
+| AI / ML ranking | `com.intellij.completion.ml.ranking`, `com.intellij.findusages.ml`, `com.intellij.searcheverywhere.ml`, `org.jetbrains.completion.full.line` |
+| Language packs | `com.intellij.ja`, `com.intellij.ko`, `com.intellij.zh` |
+| Alternative keymaps | `com.intellij.plugins.eclipsekeymap`, `com.intellij.plugins.netbeanskeymap`, `com.intellij.plugins.visualstudiokeymap` |
+| Cloud / remote | `com.intellij.settingsSync`, `com.jetbrains.remoteDevServer`, `com.jetbrains.remoteDevelopment`, `com.jetbrains.station` |
+| Containers | `Docker` |
+| Data science | `intellij.jupyter`, `org.jetbrains.plugins.kotlin.jupyter`, `intellij.grid.plugin`, `com.intellij.notebooks.core` |
+| Config / frameworks | `com.intellij.configurationScript`, `idea.plugin.protoeditor`, `intellij.ktor`, `com.intellij.jsonpath`, `org.editorconfig.editorconfigjetbrains` |
+| Diagrams / visualization | `com.intellij.diagram`, `com.intellij.debugger.collections.visualizer` |
+| Bytecode / streams | `ByteCodeViewer`, `XPathView`, `org.jetbrains.debugger.streams` |
+| Testing extras | `Coverage`, `TestNG-J` |
+| Platform / misc | `com.intellij.code.provenance`, `com.intellij.copyright`, `com.intellij.dev`, `com.intellij.platform.daemon`, `com.intellij.platform.images`, `com.intellij.modules.json`, `com.intellij.compose`, `com.jetbrains.performancePlugin`, `com.jetbrains.performancePlugin.async`, `com.jetbrains.sh`, `Lombook Plugin` |
+| Other | `training`, `com.intellij.tasks`, `com.intellij.stylelint`, `tanvd.grazi`, `org.intellij.groovy.live.templates`, `org.intellij.plugins.markdown`, `org.intellij.qodana`, `org.jetbrains.idea.eclipse`, `org.jetbrains.plugins.github`, `org.jetbrains.plugins.gitlab`, `org.jetbrains.plugins.javaFX`, `org.jetbrains.plugins.textmate`, `org.jetbrains.plugins.vue`, `org.jetbrains.plugins.yaml`, `org.jetbrains.security.package-checker` |
 
-| Plugin | Category |
-|--------|----------|
-| `AngularJS`, `JavaScript`, `HtmlTools`, `com.intellij.css`, `com.intellij.react`, `intellij.prettierJS`, `tslint`, `AngularJS`, `intellij.vitejs`, `intellij.webpack` | Web front-end |
-| `com.intellij.spring`, `com.intellij.spring.boot`, `com.intellij.spring.boot.initializr`, `com.intellij.thymeleaf` | Spring framework |
-| `com.intellij.javaee`, `com.intellij.javaee.el`, `com.intellij.jpa.jpb.model` | Jakarta EE |
-| `org.jetbrains.idea.maven` | Maven (use Gradle instead) |
-| `Docker` | Docker integration |
-| `com.intellij.database` | Database/SQL tools |
-| `com.intellij.ja`, `com.intellij.ko`, `com.intellij.zh` | Language packs (Japanese, Korean, Chinese) |
-| `com.intellij.plugins.eclipsekeymap`, `com.intellij.plugins.netbeanskeymap`, `com.intellij.plugins.visualstudiokeymap` | Alternative keymaps |
-| `training` | IDE interactive learning |
-| `com.intellij.settingsSync` | JetBrains cloud settings sync |
-| `org.jetbrains.plugins.github`, `org.jetbrains.plugins.gitlab` | GitHub / GitLab pull request UI |
-| `org.intellij.plugins.markdown` | Markdown preview |
-| `intellij.jupyter`, `org.jetbrains.plugins.kotlin.jupyter` | Jupyter notebook support |
-| `ByteCodeViewer` | Bytecode viewer tool window |
-| `Coverage` | Code coverage integration |
-| `com.intellij.diagram` | UML diagrams |
-| `com.intellij.tasks` | Issue tracker integration |
-| `com.intellij.copyright` | Copyright header management |
-| …and more | See `config/disabled_plugins.txt` |
-
-</details>
+> **Spring Boot developers:** Re-enable via **Settings → Plugins**. Minimum set: `com.intellij.spring`, `com.intellij.spring.boot`, `org.jetbrains.plugins.yaml`.
 
 ---
 
@@ -93,7 +88,7 @@ cp -r "$HOME/Library/Application Support/JetBrains/IntelliJIdea2026.1/.lean-back
 Or just delete the three files it created:
 - `idea.vmoptions` (IDEA will use built-in defaults)
 - `disabled_plugins.txt` (all plugins re-enabled)
-- `options/ide.general.xml` entries (registry reverts to defaults)
+- `options/ide.general.xml` (registry reverts to defaults)
 
 ---
 
@@ -119,6 +114,21 @@ This caps the Gradle daemon at 1 GB and the Kotlin daemon at 768 MB — enough f
 | Kotlin compilation daemon | uncapped | capped at 768 MB |
 
 A medium Kotlin/Gradle project typically uses ~800 MB for the IDE process after these changes, down from 1.5–2 GB.
+
+### JVM flags applied (`idea.vmoptions`)
+
+```
+-Xms64m
+-Xmx1024m
+-XX:ReservedCodeCacheSize=128m
+-XX:SoftRefLRUPolicyMSPerMB=25
+-XX:+UseStringDeduplication
+-XX:G1ReservePercent=5
+-XX:InitiatingHeapOccupancyPercent=35
+-Didea.cycle.buffer.size=disabled
+```
+
+`G1ReservePercent=5` frees ~50 MB of the G1 emergency reserve. `InitiatingHeapOccupancyPercent=35` triggers concurrent GC earlier (at 35% heap fill instead of the default 45%), reducing long pauses during indexing.
 
 ---
 
@@ -152,6 +162,18 @@ The biggest trigger for cache corruption is external tools (AI CLI agents, build
 Both are set to `true` by SpellStartupActivity (if you use the companion plugin). For the standalone script they can be set via **Settings → Appearance & Behavior → System Settings**.
 
 Also make sure your Gradle project's `build/` directories are marked **Excluded** in Project Structure (⌘;) — this prevents IDEA from indexing thousands of `.class` files that change on every build.
+
+### Troubleshooting: `./gradlew runIde` fails in 1 second
+
+If you see: `The contents of the immutable workspace '…/transforms/…' have been modified`
+
+An external tool (AI CLI, `find`, another Gradle process) modified Gradle's immutable transform cache. Fix:
+
+```bash
+rm -rf ~/.gradle/caches/9.3.0/transforms/<hash-from-error>
+```
+
+Then re-run. Gradle re-extracts the affected JARs on the next build.
 
 ---
 

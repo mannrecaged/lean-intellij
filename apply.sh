@@ -6,6 +6,37 @@
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# ─── Helper: merge registry XML without Python ───────────────────────────────
+# Adds any <entry> keys from $2 (patch) to $1 (target) that are not already
+# present. Preserves all existing user entries. Uses only POSIX awk + grep.
+merge_registry() {
+    local target="$1"
+    local patch="$2"
+
+    if [[ ! -f "$target" ]]; then
+        cp "$patch" "$target"
+        echo "✓ Registry settings written"
+        return
+    fi
+
+    local added=0
+    while IFS= read -r entry_line; do
+        if [[ "$entry_line" =~ key=\"([^\"]+)\" ]]; then
+            local key="${BASH_REMATCH[1]}"
+            if grep -qF "key=\"$key\"" "$target"; then
+                continue  # already present — leave it untouched
+            fi
+            # Insert the entry before </component> using awk
+            awk -v entry="    $entry_line" \
+                '/<\/component>/ { print entry } { print }' \
+                "$target" > "${target}.tmp" && mv "${target}.tmp" "$target"
+            added=$((added + 1))
+        fi
+    done < <(grep -oE '<entry [^/]+/>' "$patch")
+
+    echo "✓ Registry settings merged ($added new entries added)"
+}
+
 # ─── Locate JetBrains config base ────────────────────────────────────────────
 if [[ "$OSTYPE" == "darwin"* ]]; then
     JB_BASE="$HOME/Library/Application Support/JetBrains"
@@ -68,7 +99,7 @@ echo "✓ $PLUGIN_COUNT plugins disabled (Spring, Docker, Angular, Maven, etc.)"
 
 # ─── Merge registry settings ─────────────────────────────────────────────────
 mkdir -p "$IDEA_CONFIG/options"
-python3 "$SCRIPT_DIR/scripts/merge-registry.py" \
+merge_registry \
     "$IDEA_CONFIG/options/ide.general.xml" \
     "$SCRIPT_DIR/config/options/ide.general.xml"
 

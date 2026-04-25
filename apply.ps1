@@ -5,6 +5,43 @@
 $ErrorActionPreference = "Stop"
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 
+# ─── Helper: merge registry XML without Python ───────────────────────────────
+# Adds any <entry> keys from $PatchPath that are not already in $TargetPath.
+# Preserves all existing user entries. Uses only PowerShell built-in XML.
+function Merge-Registry {
+    param([string]$TargetPath, [string]$PatchPath)
+
+    if (-not (Test-Path $TargetPath)) {
+        Copy-Item $PatchPath $TargetPath
+        Write-Host "✓ Registry settings written"
+        return
+    }
+
+    [xml]$target = Get-Content $TargetPath -Raw
+    [xml]$patch  = Get-Content $PatchPath  -Raw
+
+    $tgtComp = $target.application.component |
+        Where-Object { $_.name -eq 'Registry' }
+    if (-not $tgtComp) {
+        $tgtComp = $target.CreateElement('component')
+        $tgtComp.SetAttribute('name', 'Registry')
+        $target.application.AppendChild($tgtComp) | Out-Null
+    }
+
+    $added = 0
+    foreach ($entry in $patch.application.component.entry) {
+        $exists = $tgtComp.SelectNodes("entry[@key='$($entry.key)']").Count -gt 0
+        if (-not $exists) {
+            $node = $target.ImportNode($entry, $true)
+            $tgtComp.AppendChild($node) | Out-Null
+            $added++
+        }
+    }
+
+    $target.Save($TargetPath)
+    Write-Host "✓ Registry settings merged ($added new entries added)"
+}
+
 # ─── Locate JetBrains config base ────────────────────────────────────────────
 $JbBase = Join-Path $env:APPDATA "JetBrains"
 if (-not (Test-Path $JbBase)) {
@@ -63,9 +100,9 @@ Write-Host "✓ $PluginCount plugins disabled"
 # ─── Merge registry settings ─────────────────────────────────────────────────
 $OptionsDir = Join-Path $IdeaConfig "options"
 New-Item -ItemType Directory -Path $OptionsDir -Force | Out-Null
-python (Join-Path $ScriptDir "scripts\merge-registry.py") `
-    (Join-Path $OptionsDir "ide.general.xml") `
-    (Join-Path $ScriptDir "config\options\ide.general.xml")
+Merge-Registry `
+    -TargetPath (Join-Path $OptionsDir "ide.general.xml") `
+    -PatchPath  (Join-Path $ScriptDir "config\options\ide.general.xml")
 
 # ─── Done ────────────────────────────────────────────────────────────────────
 Write-Host ""
