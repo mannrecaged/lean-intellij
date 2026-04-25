@@ -19,7 +19,7 @@ Works by writing three files into your existing IDEA config directory:
 | File | What it does |
 |------|-------------|
 | `idea.vmoptions` | Cuts default JVM heap from 2 GB → 1 GB; tunes GC and code cache |
-| `disabled_plugins.txt` | Stops 91 built-in plugins from loading (Spring, Docker, Angular, Maven, localization packs, etc.) |
+| `disabled_plugins.txt` | Stops 88 built-in plugins from loading (Spring, Docker, Angular, Maven, localization packs, etc.) |
 | `options/ide.general.xml` | Tunes registry: zero-latency editor rendering, telemetry off, 10 MB IntelliSense cap |
 
 Nothing is uninstalled. Plugins stay on disk; they just don't load. One command undoes everything.
@@ -77,18 +77,21 @@ To undo all changes:
 | `org.toml.lang` | Gradle version catalogs (`libs.versions.toml`) |
 | `intellij.platform.ijent.impl` | WSL and SSH remote development |
 | `org.intellij.plugins.markdown` | Markdown preview and syntax highlighting |
+| `JavaScript` | JavaScript and TypeScript language support |
+| `HtmlTools` | HTML editing, validation, and preview |
+| `com.intellij.css` | CSS language support |
 
 > **You can always re-enable any disabled plugin at any time via Settings → Plugins.**
 
-Everything else — 91 plugins — is disabled.
+Everything else — 88 plugins — is disabled.
 
 ---
 
-## What gets disabled (91 plugins)
+## What gets disabled (88 plugins)
 
 | Category | Plugin IDs |
 |----------|-----------|
-| Web front-end | `AngularJS`, `JavaScript`, `HtmlTools`, `com.intellij.css`, `com.intellij.react`, `intellij.prettierJS`, `tslint`, `intellij.vitejs`, `intellij.webpack`, `intellij.webp`, `com.intellij.plugins.webcomponents`, `JSIntentionPowerPack` |
+| Web front-end | `AngularJS`, `com.intellij.react`, `intellij.prettierJS`, `tslint`, `intellij.vitejs`, `intellij.webpack`, `intellij.webp`, `com.intellij.plugins.webcomponents`, `JSIntentionPowerPack` |
 | Spring / Jakarta EE | `com.intellij.spring`, `com.intellij.spring.boot`, `com.intellij.spring.boot.initializr`, `com.intellij.thymeleaf`, `com.intellij.javaee`, `com.intellij.javaee.el`, `com.intellij.jpa.jpb.model` |
 | Database / persistence | `com.intellij.database`, `com.intellij.flyway`, `com.intellij.liquibase` |
 | Microservices | `com.intellij.microservices.jvm`, `com.intellij.microservices.ui`, `com.intellij.swagger`, `com.jetbrains.restClient` |

@@ -2,9 +2,7 @@ AngularJS
 ByteCodeViewer
 Coverage
 Docker
-HtmlTools
 JSIntentionPowerPack
-JavaScript
 Lombook Plugin
 TestNG-J
 XPathView
@@ -16,7 +14,6 @@ com.intellij.compose
 com.intellij.configurationScript
 com.intellij.copyright
 com.intellij.cron
-com.intellij.css
 com.intellij.database
 com.intellij.debugger.collections.visualizer
 com.intellij.dev
