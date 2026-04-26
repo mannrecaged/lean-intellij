@@ -19,7 +19,7 @@ Works by writing three files into your existing IDEA config directory:
 | File | What it does |
 |------|-------------|
 | `idea.vmoptions` | Cuts default JVM heap from 2 GB → 1 GB; tunes GC and code cache |
-| `disabled_plugins.txt` | Stops 88 built-in plugins from loading (Spring, Docker, Angular, Maven, localization packs, etc.) |
+| `disabled_plugins.txt` | Stops 87 built-in plugins from loading (Spring, Docker, Angular, Maven, localization packs, etc.) |
 | `options/ide.general.xml` | Tunes registry: zero-latency editor rendering, telemetry off, 10 MB IntelliSense cap |
 
 Nothing is uninstalled. Plugins stay on disk; they just don't load. One command undoes everything.
@@ -80,14 +80,15 @@ To undo all changes:
 | `JavaScript` | JavaScript and TypeScript language support |
 | `HtmlTools` | HTML editing, validation, and preview |
 | `com.intellij.css` | CSS language support |
+| `com.intellij.platform.images` | Image file viewer — required dependency of HTML Tools and CSS |
 
 > **You can always re-enable any disabled plugin at any time via Settings → Plugins.**
 
-Everything else — 88 plugins — is disabled.
+Everything else — 87 plugins — is disabled.
 
 ---
 
-## What gets disabled (88 plugins)
+## What gets disabled (87 plugins)
 
 | Category | Plugin IDs |
 |----------|-----------|
@@ -109,7 +110,7 @@ Everything else — 88 plugins — is disabled.
 | Diagrams / visualization | `com.intellij.diagram`, `com.intellij.debugger.collections.visualizer` |
 | Bytecode / streams | `ByteCodeViewer`, `XPathView`, `org.jetbrains.debugger.streams` |
 | Testing extras | `Coverage`, `TestNG-J` |
-| Platform / misc | `com.intellij.code.provenance`, `com.intellij.copyright`, `com.intellij.dev`, `com.intellij.mcpServer`, `com.intellij.platform.daemon`, `com.intellij.platform.images`, `com.intellij.modules.json`, `com.intellij.compose`, `com.jetbrains.performancePlugin`, `com.jetbrains.performancePlugin.async`, `com.jetbrains.sh`, `Lombook Plugin` |
+| Platform / misc | `com.intellij.code.provenance`, `com.intellij.copyright`, `com.intellij.dev`, `com.intellij.mcpServer`, `com.intellij.platform.daemon`, `com.intellij.modules.json`, `com.intellij.compose`, `com.jetbrains.performancePlugin`, `com.jetbrains.performancePlugin.async`, `com.jetbrains.sh`, `Lombook Plugin` |
 | Other | `training`, `com.intellij.tasks`, `com.intellij.stylelint`, `tanvd.grazi`, `org.intellij.groovy.live.templates`, `org.intellij.qodana`, `org.jetbrains.idea.eclipse`, `org.jetbrains.plugins.github`, `org.jetbrains.plugins.gitlab`, `org.jetbrains.plugins.javaFX`, `org.jetbrains.plugins.textmate`, `org.jetbrains.plugins.vue`, `org.jetbrains.plugins.yaml`, `org.jetbrains.security.package-checker` |
 
 > **Spring Boot developers:** Re-enable via **Settings → Plugins**. Minimum set: `com.intellij.spring`, `com.intellij.spring.boot`, `org.jetbrains.plugins.yaml`.

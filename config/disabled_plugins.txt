@@ -36,7 +36,6 @@ com.intellij.microservices.ui
 com.intellij.modules.json
 com.intellij.notebooks.core
 com.intellij.platform.daemon
-com.intellij.platform.images
 com.intellij.plugins.eclipsekeymap
 com.intellij.plugins.netbeanskeymap
 com.intellij.plugins.visualstudiokeymap
