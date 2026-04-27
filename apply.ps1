@@ -42,6 +42,45 @@ function Merge-Registry {
     Write-Host "✓ Registry settings merged ($added new entries added)"
 }
 
+# ─── Helper: merge GeneralSettings XML options ───────────────────────────────
+function Merge-GeneralSettings {
+    param([string]$TargetPath, [string]$PatchPath)
+
+    if (-not (Test-Path $TargetPath)) {
+        Copy-Item $PatchPath $TargetPath
+        Write-Host "✓ GeneralSettings written"
+        return
+    }
+
+    [xml]$target = Get-Content $TargetPath -Raw
+    [xml]$patch  = Get-Content $PatchPath  -Raw
+
+    $tgtComp = $target.application.component |
+        Where-Object { $_.name -eq 'GeneralSettings' }
+    if (-not $tgtComp) {
+        $tgtComp = $target.CreateElement('component')
+        $tgtComp.SetAttribute('name', 'GeneralSettings')
+        $target.application.AppendChild($tgtComp) | Out-Null
+    }
+
+    $patchComp = $patch.application.component |
+        Where-Object { $_.name -eq 'GeneralSettings' }
+    if (-not $patchComp) { return }
+
+    $added = 0
+    foreach ($option in $patchComp.option) {
+        $exists = $tgtComp.SelectNodes("option[@name='$($option.name)']").Count -gt 0
+        if (-not $exists) {
+            $node = $target.ImportNode($option, $true)
+            $tgtComp.AppendChild($node) | Out-Null
+            $added++
+        }
+    }
+
+    $target.Save($TargetPath)
+    Write-Host "✓ GeneralSettings merged ($added new entries added)"
+}
+
 # ─── Locate JetBrains config base ────────────────────────────────────────────
 $JbBase = Join-Path $env:APPDATA "JetBrains"
 if (-not (Test-Path $JbBase)) {
@@ -90,19 +129,20 @@ Write-Host "✓ Backup saved → $Backup"
 
 # ─── JVM memory flags ────────────────────────────────────────────────────────
 Copy-Item (Join-Path $ScriptDir "config\idea.vmoptions") (Join-Path $IdeaConfig "idea.vmoptions") -Force
-Write-Host "✓ JVM flags: Xmx=1024m · CodeCache=128m · cycle.buffer=disabled"
+Write-Host "✓ JVM flags: Xmx=1024m · CodeCache=240m · GC-tuned · cycle.buffer=disabled"
 
 # ─── Disable unused plugins ──────────────────────────────────────────────────
 Copy-Item (Join-Path $ScriptDir "config\disabled_plugins.txt") (Join-Path $IdeaConfig "disabled_plugins.txt") -Force
 $PluginCount = (Get-Content (Join-Path $ScriptDir "config\disabled_plugins.txt") | Where-Object { $_ -match '\S' }).Count
 Write-Host "✓ $PluginCount plugins disabled"
 
-# ─── Merge registry settings ─────────────────────────────────────────────────
+# ─── Merge ide.general.xml settings ─────────────────────────────────────────
 $OptionsDir = Join-Path $IdeaConfig "options"
 New-Item -ItemType Directory -Path $OptionsDir -Force | Out-Null
-Merge-Registry `
-    -TargetPath (Join-Path $OptionsDir "ide.general.xml") `
-    -PatchPath  (Join-Path $ScriptDir "config\options\ide.general.xml")
+$IdeGeneralTarget = Join-Path $OptionsDir "ide.general.xml"
+$IdeGeneralPatch  = Join-Path $ScriptDir "config\options\ide.general.xml"
+Merge-GeneralSettings -TargetPath $IdeGeneralTarget -PatchPath $IdeGeneralPatch
+Merge-Registry        -TargetPath $IdeGeneralTarget -PatchPath $IdeGeneralPatch
 
 # ─── Done ────────────────────────────────────────────────────────────────────
 Write-Host ""

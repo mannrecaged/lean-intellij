@@ -56,6 +56,52 @@ merge_registry() {
     echo "✓ Registry settings merged ($added new entries added)"
 }
 
+# ─── Helper: merge GeneralSettings XML options ───────────────────────────────
+# Adds any <option> keys from $2 (patch) to the GeneralSettings component in
+# $1 (target) that are not already present. Uses only POSIX awk + grep.
+merge_general_settings() {
+    local target="$1"
+    local patch="$2"
+
+    if [[ ! -f "$target" ]]; then
+        cp "$patch" "$target"
+        echo "✓ GeneralSettings written"
+        return
+    fi
+
+    local added=0
+
+    if ! grep -q 'name="GeneralSettings"' "$target"; then
+        local tmpblk
+        tmpblk=$(mktemp)
+        awk '/<component[^>]*name="GeneralSettings"/{p=1} p{print} p && /<\/component>/{p=0}' \
+            "$patch" > "$tmpblk"
+        awk 'FNR==NR{blk=blk $0 "\n";next} /<\/application>/{printf "%s",blk} {print}' \
+            "$tmpblk" "$target" > "${target}.tmp" \
+            && mv "${target}.tmp" "$target"
+        rm -f "$tmpblk"
+        echo "✓ GeneralSettings written"
+        return
+    fi
+
+    while IFS= read -r entry_line; do
+        if [[ "$entry_line" =~ name=\"([^\"]+)\" ]]; then
+            local key="${BASH_REMATCH[1]}"
+            if grep -qF "name=\"$key\"" "$target"; then
+                continue
+            fi
+            awk -v entry="    $entry_line" '
+                /<component[^>]*name="GeneralSettings"/ { in_comp=1 }
+                in_comp && /<\/component>/              { print entry; in_comp=0 }
+                { print }
+            ' "$target" > "${target}.tmp" && mv "${target}.tmp" "$target"
+            added=$((added + 1))
+        fi
+    done < <(grep -oE '<option [^/]+/>' "$patch")
+
+    echo "✓ GeneralSettings merged ($added new entries added)"
+}
+
 # ─── Locate JetBrains config base ────────────────────────────────────────────
 if [[ "$OSTYPE" == "darwin"* ]]; then
     JB_BASE="$HOME/Library/Application Support/JetBrains"
@@ -119,8 +165,11 @@ cp "$SCRIPT_DIR/config/disabled_plugins.txt" "$IDEA_CONFIG/disabled_plugins.txt"
 PLUGIN_COUNT=$(grep -c '[^[:space:]]' "$SCRIPT_DIR/config/disabled_plugins.txt")
 echo "✓ $PLUGIN_COUNT plugins disabled (Spring, Docker, Angular, Maven, etc.)"
 
-# ─── Merge registry settings ─────────────────────────────────────────────────
+# ─── Merge ide.general.xml settings ─────────────────────────────────────────
 mkdir -p "$IDEA_CONFIG/options"
+merge_general_settings \
+    "$IDEA_CONFIG/options/ide.general.xml" \
+    "$SCRIPT_DIR/config/options/ide.general.xml"
 merge_registry \
     "$IDEA_CONFIG/options/ide.general.xml" \
     "$SCRIPT_DIR/config/options/ide.general.xml"
